@@ -1,0 +1,5 @@
+function mapping = feature_extraction(dataset, fisher=false)
+
+    if 
+
+end
