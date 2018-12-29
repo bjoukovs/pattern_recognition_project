@@ -1,30 +1,13 @@
 clear all, close all, prwaitbar off;
 
 % The NIST datasets contains 1000 images per classes
-NIST = prnist([0:9], [1:1000]);
+% Puts them in a box and resize it to 64x64
+% The datasetm command needs equal size images to work
 
-images_per_class = {};
+NIST = datasetm(im_resize(im_box(prnist([0:9], [1:1000]), 0, 1), [64 64]));
 
-classes = 1:10;
-labels = 0:9;
-
-for i=classes
-    
-    fprintf('Extracting images for class %d \n', i);
-    images_per_class{i} = data2im(seldat(NIST,i));
-    
-end
-
-save('IMAGES.mat', 'images_per_class');
-
-%%
 
 %Step 1 : Manipulate the images, resize them, make them square...
-
-
-
-
-%Step 2 : making a new dataset using the vectorized images and prdataset()
 
 
 
@@ -49,7 +32,7 @@ save("datasets/big_dataset.mat", 'train_big', 'tst_big');
 
 save("datasets/small_nist_eval.mat", 'DATA2');
 
-frac = 0.1 %10 images for training, 90 for testing
+frac = 0.1; %10 images for training, 90 for testing
 [train_small, tst_small] = gendat(DATA1, frac);
 
 save("datasets/small_dataset.mat", 'train_small', 'tst_small');
