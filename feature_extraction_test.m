@@ -1,8 +1,8 @@
 clear all, close all, prwaitbar off;
 
 dataset = load('datasets/big_dataset.mat');
-train = dataset.train_big;
-tst = dataset.tst_big;
+train = dataset.train;
+tst = dataset.tst;
 
 % dataset = load('datasets/small_dataset.mat');
 % train = dataset.train_small;
