@@ -4,14 +4,16 @@ function error = nist_eval(dataset, classifier)
     %dataset
     
     %Perform classification on unlabelled data
-    classified_labels = getlab(+dataset*classifier);
+    classified_labels = dataset*classifier*labeld;
     
     %original labels
     labels = getlab(dataset);
     
-    %compare
-    success = (classified_labels - labels)==0;
+    %compare -> 0 if error
+    success = labels(:,end) - classified_labels(:,end)==0;
     
-    error = nnz(success);
+    
+    sz = size(dataset);
+    error = 1 - nnz(success)/sz(1);
     
 end
