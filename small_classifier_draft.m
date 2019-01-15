@@ -155,6 +155,24 @@ combined = [bagging_qdc*classc bagging_1nn*classc]*maxc;
 trained_combined = PCA_mapping(:,1:21)*combined(mapped_train);
 e_knnqdc = nist_data*trained_combined*testc
 
+%% SVC
+
+knn1_mapping = PCA_mapping(:,1:21);
+mapped_train = train*knn1_mapping;
+mapped_tst = tst*knn1_mapping;
+
+%classfr_svc = svc(proxm('d',3));
+classfr_svc = svc(proxm('d',3))*fisherc; %6.4
+%classfr_svc = svc(proxm('d',3))*qdc; %9
+%classfr_svc = svc(proxm('d',3))*knnc([],1); %7.7
+%classfr_svc = [svc(proxm('d',3)) fisherc]*bpxnc([],35,5000); %7
+%classfr_svc = svc(proxm('p',5)); %8
+classfr_svc_train = knn1_mapping*classfr_svc(mapped_train);
+e_svc = nist_data*classfr_svc_train*testc
+
+
+
+
 
 
 

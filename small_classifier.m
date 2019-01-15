@@ -12,6 +12,15 @@ PCA_mapping = feature_extraction(train, false, 0.95, 0);
 
 % Best calssifiers
 
+%% SVC
+% 6.4%
+svc_mapping = PCA_mapping(:,1:21);
+mapped_train = train*svc_mapping;
+mapped_tst = tst*svc_mapping;
+classfr_svc = svc(proxm('d',3))*fisherc; 
+classfr_svc_train = svc_mapping*classfr_svc(mapped_train);
+e_svc = nist_data*classfr_svc_train*testc
+
 %% COMBINING KNN + QDC USING 2 LAYER 12-NODES NN 
 % 7.4%
 combined_mapping = PCA_mapping(:,1:21);

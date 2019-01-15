@@ -118,3 +118,18 @@ disp('finished');
 % trained_combined = mapped_train*combined;
 
 [E C] = mapped_tst*trained_combined*testc;
+
+%% SVC
+% 3.1% error for 30 features
+% min error at 21. clevalf takes hours to run on svc(proxm('d',3))*fisherc
+% feat_number = 1:5:46;
+% featcurve_svc = clevalf(mapped_train, svc(proxm('d',3))*fisherc, feat_number, [], 1, mapped_tst);
+% plote(featcurve_svc)
+
+knn1_mapping = PCA_mapping(:,1:30);
+mapped_train = train*knn1_mapping;
+mapped_tst = tst*knn1_mapping;
+
+classfr_svc = svc(proxm('d',3))*fisherc; %6.4
+classfr_svc_train = knn1_mapping*classfr_svc(mapped_train);
+e_svc = nist_data*classfr_svc_train*testc

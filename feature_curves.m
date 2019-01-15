@@ -26,7 +26,7 @@ classfr_bagknnc = baggingc([],knnc([], 1));
 
 %Feature curves
 repetitions = 6;
-feat_number = 1:5:50;
+feat_number = 1:5:46;
 tic
 featcurve_1nn = clevalf(mapped_train, knnc([], 1), feat_number, [], repetitions, mapped_tst);
 disp('1nn');
@@ -42,6 +42,8 @@ featcruve_bagqdc = clevalf(mapped_train, classfr_bagqdc, feat_number, [], repeti
 disp('bagqdc');
 featcruve_bagknnc = clevalf(mapped_train, classfr_bagknnc, feat_number, [], repetitions, mapped_tst);
 disp('bagknnc');
+featcurve_svc = clevalf(mapped_train, svc(proxm('d',3))*fisherc, feat_number, [], 1, mapped_tst);
+plote(featcurve_svc)
 %plote({featcurve_1nn, featcurve_2nn, featcurve_qdc, featcurve_ldc, featcruve_combined, featcruve_bagqdc, featcruve_bagknnc});
 toc
 
