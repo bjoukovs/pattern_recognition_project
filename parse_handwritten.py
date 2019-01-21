@@ -2,7 +2,7 @@
 try:
 	import cv2
 except ImportError:
-	print("OpenCV is not installed. Please do this by running pip install opencv-python")
+	print("OpenCV is not installed. Please do this by running pip install opencv-python==3.4.4.19")
 	quit()
 try:
 	import numpy as np
