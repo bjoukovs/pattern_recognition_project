@@ -1,7 +1,36 @@
+function digits = hadwritten_data(directory)
 
-img_files = dir('handwritten_extracted/*.jpg');
-img = imread(strcat(img_files(i).folder,'/',img_files(i).name))
-dataset({size()}, 1);
+    img_files = dir(strcat(directory,'/*.jpg'));
+    
+    images = [];
+    
+    for i = 1:length(img_files)
+        image = im2double(imread(char(strcat(strcat(directory, '/'), img_files(i).name))));
+        
+        %inverting
+        image = imcomplement(image);
+        
+        %square box
+        image = im_box(image,1,0);
+        
+        %resize and box to 64x64
+        image = imresize(image, [64,64]);
+        
+        %vectorizing image
+        images(i,:) = image(:);
+        
+    end
+    
+    digits = prdataset(images);
+    
+end
+
+
+
+
+
+%img = imread(strcat(img_files(i).folder,'/',img_files(i).name))
+%dataset({size()}, 1);
 
 % n_imgs = length(img_files)
 % imgs = {};
