@@ -1,10 +1,10 @@
 clear all, close all, prwaitbar off; prwarning off;
 
-dataset = load('datasets/small_dataset.mat');
+dataset = load('../datasets/small_dataset.mat');
 train = dataset.train;
 tst = dataset.tst;
 
-nist_testing = load('datasets/small_nist_eval.mat');
+nist_testing = load('../datasets/small_nist_eval.mat');
 nist_data = nist_testing.DATA2;
 
 %PCA 120 features
@@ -17,8 +17,8 @@ PCA_mapping = feature_extraction(train, false, 0.95, 0);
 % number of features respectively: 21, 21, 21, and 26
 % errors: 6.8% 7% 7.5% 8.5%
 
-mapped_train = train*knn1_mapping;
-mapped_tst = tst*knn1_mapping;
+mapped_train = train*PCA_mapping;
+mapped_tst = tst*PCA_mapping;
 combined_classfr = [knnc([],1)*classc qdc*classc]*bpxnc([],12,5000);
 classfr_bagqdc = baggingc([],qdc);
 classfr_bagknnc = baggingc([],knnc([], 1));
@@ -26,7 +26,7 @@ classfr_bagknnc = baggingc([],knnc([], 1));
 
 %Feature curves
 repetitions = 6;
-feat_number = 1:5:46;
+feat_number = 1:1:10;
 tic
 featcurve_1nn = clevalf(mapped_train, knnc([], 1), feat_number, [], repetitions, mapped_tst);
 disp('1nn');
@@ -69,4 +69,4 @@ optimalfeat_bagqdc = feat_number(optimalfeat_index_bagqdc);
 [optimalfeat_error_bagknnc, optimalfeat_index_bagknnc]=min(featcruve_bagknnc.error);
 optimalfeat_bagknnc = feat_number(optimalfeat_index_bagknnc);
 
-
+save ('feature_curves_v2_15features');

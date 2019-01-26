@@ -1,7 +1,7 @@
 clear all, close all, prwaitbar off
 
-addpath("utils/");
-addpath("Digit_scanner/")
+addpath('utils/');
+addpath('Digit_scanner/')
 
 %% Generating the datasets
 
@@ -47,21 +47,21 @@ error_big = nist_eval(nist_data_big, classifier_big);
 error_small = nist_eval(nist_data_small, classifier_small);
 
 if error_big < 0.05
-    disp(sprintf("Success! The BIG classifier performs with a NIST error of %f", error_big));
+    disp(sprintf('Success! The BIG classifier performs with a NIST error of %f', error_big));
 else
-    disp(sprintf("The BIG classifier does not fulfill the requirements: NIST error of %f", error_big));
+    disp(sprintf('The BIG classifier does not fulfill the requirements: NIST error of %f', error_big));
 end
 
 if error_small < 0.2
-    disp(sprintf("Success! The SMALL classifier performs with a NIST error of %f", error_small));
+    disp(sprintf('Success! The SMALL classifier performs with a NIST error of %f', error_small));
 else
-    disp(sprintf("The SMALL classifier does not fulfill the requirements: NIST error of %f", error_small));
+    disp(sprintf('The SMALL classifier does not fulfill the requirements: NIST error of %f', error_small));
 end
 
 
 %% Testing with custom digits
 
-digits = handwritten_data("Digit_scanner/good_digits");
+digits = handwritten_data('Digit_scanner/good_digits');
 
 labels_big = labeld(digits*classifier_big);
 labels_small = labeld(digits*classifier_small);
