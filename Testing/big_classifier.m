@@ -143,3 +143,27 @@ mapped_tst = tst*knn1_mapping;
 classfr_svc = svc(proxm('d',3))*fisherc; %6.4
 classfr_svc_train = knn1_mapping*classfr_svc(mapped_train);
 e_svc = nist_data*classfr_svc_train*testc
+
+
+
+%% Some ROC curves
+
+mapped_train = train*PCA_mapping(:,1:30);
+mapped_tst = tst*PCA_mapping(:,1:30);
+
+%Bagging QDC
+bagging_c  = baggingc(mapped_train, qdc, 100);
+
+%Combined
+combined_classfr = [knnc([],1)*classc qdc*classc]*bpxnc([],10,5000);
+combined_classfr_train = combined_classfr(mapped_train);
+
+%Single
+qdcc = qdc(mapped_train);
+knn1c = knnc(mapped_train, 1);
+
+E1 = prroc(mapped_tst, bagging_c);
+E2 = prroc(mapped_tst, combined_classfr_train);
+E3 = prroc(mapped_tst, qdcc);
+E4 = prroc(mapped_tst, knn1c);
+plote({E1 E2, E3, E4});

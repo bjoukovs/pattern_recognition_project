@@ -3,10 +3,11 @@ function datasets = my_rep(datafile)
     % This function generates datasets for the large dataset case and small
     % dataset case.
     % The output is a cell of datasets containing
-    %   1) Big dataset for classifier training and testing
-    %   2) Big dataset for classifier evaluation (nist_eval)
-    %   3) Small dataset for classifier training and testing
-    %   7) Small dataset for classifier evaluation (nist_eval)
+    %   1) Big dataset for classifier evaluation (nist_eval)
+    %   2) Big dataset for classifier training and testing
+    %   3) Small dataset for classifier evaluation (nist_eval)
+    %   4) Small dataset for classifier training and testing
+    %   5) Small unified dataset
     
     datasets = {'../datasets/big_nist_eval.mat', '../datasets/big_dataset.mat', '../datasets/small_nist_eval.mat', '../datasets/small_dataset.mat', '../datasets/small_dataset_notfolded.mat'};
     
