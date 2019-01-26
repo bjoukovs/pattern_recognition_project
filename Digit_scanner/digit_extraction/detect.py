@@ -1,6 +1,32 @@
 import numpy as np
 import cv2
 
+def crop(img, threshold=240):
+    vertical_1=0
+    vertical_2=img.shape[0]
+    horizontal_1=0
+    horizontal_2=img.shape[1]
+    
+    for y in range(img.shape[0]):
+        if np.any(img[y,:]<threshold):
+                vertical_1=y
+                break
+    for y in range(img.shape[0]-1,-1,-1):
+        if np.any(img[y,:]<threshold):
+                vertical_2=y
+                break
+    
+    for x in range(img.shape[1]):
+        if np.any(img[:,x]<threshold):
+            horizontal_1=x
+            break
+    for x in range(img.shape[1]-1, -1, -1):
+        if np.any(img[:,x]<threshold):
+            horizontal_2=x
+            break
+                    
+    return img[vertical_1:vertical_2, horizontal_1:horizontal_2]
+
 def detect(file, output_dir="./"):
     im = cv2.imread(file)
     
@@ -63,7 +89,7 @@ def detect(file, output_dir="./"):
     
     ordered_points = np.delete(ordered_points, np.where(ordered_points[:, 0:1] == 0), axis=0)
     for i in range(0, len(ordered_points)):
-        cv2.imwrite(output_dir + 'digit_'+str(i)+'.jpg', op[:, :, ordered_points[i, 2].astype(int)])
+        cv2.imwrite(output_dir + 'digit_'+str(i)+'.jpg', crop(op[:, :, ordered_points[i, 2].astype(int)]))
         
         #	cv2.imshow('img', gray)
         #	cv2.waitKey(0)
