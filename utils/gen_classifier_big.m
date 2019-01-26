@@ -1,4 +1,4 @@
-function classfr = gen_classifier_big(train, tst)
+function [classfr, test_error] = gen_classifier_big(train, tst)
     
     % Generates the digit classifier including the feature selection
     % mapping, in the case of the big dataset
@@ -16,6 +16,9 @@ function classfr = gen_classifier_big(train, tst)
     bagging_c  = baggingc(mapped_train, qdc, 100);
     
     classfr = PCA_mapping(:,1:30)*bagging_c;
+    
+    [E C] = tst*classfr*testc;
+    test_error = E;
 
 end
 
