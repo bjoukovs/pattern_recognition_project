@@ -26,20 +26,22 @@ knn1 = knnc([], 1);
 knn2 = knnc([], 2);
 
 %Feature curves
-featcurve1 = clevalf(mapped_train, knn1, 1:10:150, [], 1, mapped_tst);
-featcurve2 = clevalf(mapped_train, knn2, 1:10:150, [], 1, mapped_tst);
-featcurve3 = clevalf(mapped_train, qdc, 1:10:150, [], 1, mapped_tst);
+featcurve1 = clevalf(mapped_train, knn1, 1:2:60, [], 1, mapped_tst);
+featcurve2 = clevalf(mapped_train, knn2, 1:2:60, [], 1, mapped_tst);
+featcurve3 = clevalf(mapped_train, qdc, 1:2:60, [], 1, mapped_tst);
 plote({featcurve1, featcurve2, featcurve3});
  
-mapped_train = train*PCA_mapping(:,1:50);
-mapped_tst = tst*PCA_mapping(:,1:50);
+mapped_train = train*PCA_mapping(:,1:25);
+mapped_tst = tst*PCA_mapping(:,1:25);
 
 
 %train classifier
 classfr = knnc(mapped_train, 1);
-%classfr = parzenc(mapped_train,1);
-%classfr = qdc(mapped_train);
+classfr2 = knnc(mapped_train,2);
+classfr3 = qdc(mapped_train);
 [E C] = mapped_tst*classfr*testc;
+[E2 C2] = mapped_tst*classfr2*testc;
+[E3 C3] = mapped_tst*classfr3*testc;
 
 %Confusion matrix
 confusion = confmat(getlab(mapped_tst), mapped_tst*classfr*labeld)
@@ -55,8 +57,8 @@ error = nist_eval(nist_data, final_classifier);
 %% COMBINING KNN + QDC USING 2 LAYER 10-nodes NN
 
 
-mapped_train = train*PCA_mapping(:,1:50);
-mapped_tst = tst*PCA_mapping(:,1:50);
+mapped_train = train*PCA_mapping(:,1:25);
+mapped_tst = tst*PCA_mapping(:,1:25);
 
 w1 = knnc(mapped_train, 1);
 w3 = qdc(mapped_train);
@@ -74,7 +76,11 @@ combined_classfr_train = combined_classfr(mapped_train);
 [E C] = mapped_tst*combined_classfr_train*testc;
 
 
-final_classifier = PCA_mapping(:,1:50)*combined_classfr_train;
+featcurve_bp = clevalf(mapped_train, combined_classfr, 1:2:50, [], 1, mapped_tst);
+plote(featcurve_bp)
+
+
+final_classifier = PCA_mapping(:,1:25)*combined_classfr_train;
 
 error = nist_eval(nist_data, final_classifier);
 
@@ -89,8 +95,10 @@ disp('finished');
 %% Alternative: bagging the qdc classifier
 
 %Just for curiosity, redoing the feature curves for this classifier:
-%featcurve1 = clevalf(train*PCA_mapping, baggingc([], qdc, 100), 20:5:100, [], 1, tst*PCA_mapping);
-%plote(featcurve1);
+mapped_train = train*PCA_mapping(:,1:50);
+mapped_tst = tst*PCA_mapping(:,1:50);
+featcurve1 = clevalf(train*PCA_mapping, baggingc([], qdc, 100), 1:2:50, [], 1, tst*PCA_mapping);
+plote(featcurve1);
 % It seems that we could do even better with only ~35 features so this is
 % the reason I put 30 instead of 50 in this case
 %The classifier as a super good performance (3.5 %) !
@@ -135,3 +143,27 @@ mapped_tst = tst*knn1_mapping;
 classfr_svc = svc(proxm('d',3))*fisherc; %6.4
 classfr_svc_train = knn1_mapping*classfr_svc(mapped_train);
 e_svc = nist_data*classfr_svc_train*testc
+
+
+
+%% Some ROC curves
+
+mapped_train = train*PCA_mapping(:,1:30);
+mapped_tst = tst*PCA_mapping(:,1:30);
+
+%Bagging QDC
+bagging_c  = baggingc(mapped_train, qdc, 100);
+
+%Combined
+combined_classfr = [knnc([],1)*classc qdc*classc]*bpxnc([],10,5000);
+combined_classfr_train = combined_classfr(mapped_train);
+
+%Single
+qdcc = qdc(mapped_train);
+knn1c = knnc(mapped_train, 1);
+
+E1 = prroc(mapped_tst, bagging_c);
+E2 = prroc(mapped_tst, combined_classfr_train);
+E3 = prroc(mapped_tst, qdcc);
+E4 = prroc(mapped_tst, knn1c);
+plote({E1 E2, E3, E4});

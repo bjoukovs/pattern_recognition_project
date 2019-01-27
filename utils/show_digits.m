@@ -4,7 +4,7 @@ function show_digits(digits, labels)
     
     figure;
     
-    n = length(labels)
+    n = length(labels);
     
     for i=1:n
        subplot(ceil(n/5),5,i);

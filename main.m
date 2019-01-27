@@ -1,7 +1,7 @@
-clear all, close all, prwaitbar off
+clear all, close all, prwaitbar on
 
-addpath("utils/");
-addpath("Digit_scanner/")
+addpath('utils/');
+addpath('Digit_scanner/')
 
 %% Generating the datasets
 
@@ -22,9 +22,8 @@ nist_testing_big = load('datasets/big_nist_eval.mat');
 nist_data_big = nist_testing_big.DATA2;
 
 %For the small dataset case
-dataset_small = load('datasets/small_dataset.mat');
-train_small = dataset_small.train;
-tst_small = dataset_small.tst;
+dataset_small = load('datasets/small_dataset_notfolded.mat');
+train_small = dataset_small.DATA1;
 
 nist_testing_small = load('datasets/small_nist_eval.mat');
 nist_data_small = nist_testing_small.DATA2;
@@ -32,39 +31,39 @@ nist_data_small = nist_testing_small.DATA2;
 
 %% Training the big classifier
 
-classifier_big = gen_classifier_big(train_big, tst_big);
+[classifier_big, error_big] = gen_classifier_big(train_big, tst_big);
 
 
 
 %% Training the small classifier
 
-classifier_small = gen_classifier_small(train_small, tst_small);
+[classifier_small, error_small] = gen_classifier_small(train_small);
 
 
 %% Testing the classifiers with NIST_EVAL
 
-error_big = nist_eval(nist_data_big, classifier_big);
-error_small = nist_eval(nist_data_small, classifier_small);
+error_big_nist = nist_eval(nist_data_big, classifier_big, 300);
+error_small_nist = nist_eval(nist_data_small, classifier_small, 300);
 
-if error_big < 0.05
-    disp(sprintf("Success! The BIG classifier performs with a NIST error of %f", error_big));
+if error_big_nist < 0.05
+    disp(sprintf('Success! The BIG classifier performs with a NIST error of %f', error_big_nist));
 else
-    disp(sprintf("The BIG classifier does not fulfill the requirements: NIST error of %f", error_big));
+    disp(sprintf('The BIG classifier does not fulfill the requirements: NIST error of %f', error_big_nist));
 end
 
-if error_small < 0.2
-    disp(sprintf("Success! The SMALL classifier performs with a NIST error of %f", error_small));
+if error_small_nist < 0.25
+    disp(sprintf('Success! The SMALL classifier performs with a NIST error of %f', error_small_nist));
 else
-    disp(sprintf("The SMALL classifier does not fulfill the requirements: NIST error of %f", error_small));
+    disp(sprintf('The SMALL classifier does not fulfill the requirements: NIST error of %f', error_small_nist));
 end
 
 
 %% Testing with custom digits
 
-digits = handwritten_data("Digit_scanner/good_digits");
+digits = handwritten_data('Digit_scanner/good_digits');
 
-labels_big = labeld(digits*classifier_big);
-labels_small = labeld(digits*classifier_small);
+labels_big = digits*classifier_big*labeld;
+labels_small = digits*classifier_small*labeld;
 
 show_digits(digits, labels_big)
 show_digits(digits, labels_small)

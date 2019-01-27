@@ -22,6 +22,7 @@ function digits = hadwritten_data(directory)
     end
     
     digits = prdataset(images);
+    digits.featsize = [64 64];
     
 end
 
